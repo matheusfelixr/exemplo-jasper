@@ -30,10 +30,10 @@ public class employeeReport {
     public ResponseEntity<byte[]> downloadFile() {
         try {
             List<Employee> employees = repository.findAll();
-            ByteArrayResource resource = new ByteArrayResource(jasperReportService.generateReport(employees, "employees.jrxml", ReportType.HTML));
+            ByteArrayResource resource = new ByteArrayResource(jasperReportService.generateReport(employees, "employees.jrxml", ReportType.CSV));
 
             return ResponseEntity.ok()
-                    .header("Content-Disposition", "inline; filename=" + "employee.pdf")
+                    .header("Content-Disposition", "inline; filename=" + "employee.csv")
                     .contentType(MediaType.APPLICATION_CBOR)
                     .body(resource.getByteArray());
         } catch (Exception e) {

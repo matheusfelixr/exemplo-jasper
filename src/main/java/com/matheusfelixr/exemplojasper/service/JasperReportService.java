@@ -6,7 +6,9 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import javax.xml.bind.ValidationException;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +28,23 @@ public class JasperReportService {
             return JasperExportManager.exportReportToPdf(jasperPrint);
         }
         if(reportType == ReportType.HTML) {
-            JasperExportManager.exportReportToHtmlFile(jasperPrint, "teste.html");
-            return null
+            JasperExportManager.exportReportToHtmlFile(jasperPrint, "reports/"+reportName+".html");
+            File returnFile = new File("reports/"+reportName+".html");
+            if(!returnFile.exists()){
+                throw new ValidationException("Não foi encontrado arquivo html para retornar.");
+            }
+            return Files.readAllBytes(returnFile.toPath());
+        }
+        if(reportType == ReportType.xml) {
+            JasperExportManager.exportReportToXmlFile(jasperPrint, "reports/"+reportName+".xml", true);
+            File returnFile = new File("reports/"+reportName+".xml");
+            if(!returnFile.exists()){
+                throw new ValidationException("Não foi encontrado arquivo xml para retornar.");
+            }
+            return Files.readAllBytes(returnFile.toPath());
         }
 
-        return null;
+
+            return null;
     }
 }
